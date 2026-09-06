@@ -11,8 +11,8 @@
     --sky-4:#99C3E4;
     --cream:#FFF9E6;
 
-    --glass:rgba(255,255,255,.30);
-    --glass-soft:rgba(255,255,255,.18);
+    --glass:rgba(255,255,255,.34);
+    --glass-soft:rgba(255,255,255,.20);
     --glass-border:rgba(255,255,255,.55);
 
     --text:#283A4C;
@@ -79,7 +79,7 @@ body{
 }
 
 /* ===========================
-   Background
+   Background (page)
 =========================== */
 
 .background{
@@ -107,45 +107,9 @@ body{
 
 }
 
-.blob1{
-
-    width:320px;
-    height:320px;
-
-    background:var(--sky-1);
-
-    top:-80px;
-    left:-60px;
-
-}
-
-.blob2{
-
-    width:260px;
-    height:260px;
-
-    background:var(--sky-3);
-
-    right:-60px;
-    bottom:60px;
-
-    animation-delay:5s;
-
-}
-
-.blob3{
-
-    width:220px;
-    height:220px;
-
-    background:var(--cream);
-
-    top:45%;
-    left:45%;
-
-    animation-delay:10s;
-
-}
+.blob1{ width:320px; height:320px; background:var(--sky-1); top:-80px; left:-60px; }
+.blob2{ width:260px; height:260px; background:var(--sky-3); right:-60px; bottom:60px; animation-delay:5s; }
+.blob3{ width:220px; height:220px; background:var(--cream); top:45%; left:45%; animation-delay:10s; }
 
 @keyframes float{
 
@@ -161,8 +125,7 @@ body{
 
     opacity:.05;
 
-    background-image:
-    radial-gradient(circle,white 1px,transparent 1px);
+    background-image:radial-gradient(circle,white 1px,transparent 1px);
 
     background-size:16px 16px;
 
@@ -209,11 +172,7 @@ body{
 
     overflow:hidden;
 
-    background:var(--glass-soft);
-
-    backdrop-filter:blur(30px);
-
-    -webkit-backdrop-filter:blur(30px);
+    background:var(--sky-2);
 
     border:1px solid var(--glass-border);
 
@@ -223,7 +182,21 @@ body{
 
 }
 
-.profile-card::before{
+/* cover.jpg — the literal background of the whole card */
+
+.card-bg{
+
+    position:absolute;
+    inset:0;
+
+    background-size:cover;
+    background-position:center;
+
+    z-index:0;
+
+}
+
+.card-bg::after{
 
     content:"";
 
@@ -231,42 +204,11 @@ body{
     inset:0;
 
     background:linear-gradient(
-        180deg,
-        rgba(255,255,255,.35),
-        transparent 40%
+        165deg,
+        rgba(227,241,251,.72),
+        rgba(193,228,243,.55) 45%,
+        rgba(153,195,228,.62)
     );
-
-    pointer-events:none;
-
-    z-index:2;
-
-}
-
-.profile-card::after{
-
-    content:"";
-
-    position:absolute;
-
-    top:-150%;
-    left:-40%;
-
-    width:80%;
-    height:300%;
-
-    transform:rotate(28deg);
-
-    background:linear-gradient(
-        transparent,
-        rgba(255,255,255,.25),
-        transparent
-    );
-
-    animation:shine 9s linear infinite;
-
-    pointer-events:none;
-
-    z-index:2;
 
 }
 
@@ -274,13 +216,6 @@ body{
 
     0%,100%{ transform:translateY(0); }
     50%{ transform:translateY(-8px); }
-
-}
-
-@keyframes shine{
-
-    from{ transform:translateX(-250%) rotate(28deg); }
-    to{ transform:translateX(350%) rotate(28deg); }
 
 }
 
@@ -314,7 +249,7 @@ body{
 
     border-radius:999px;
 
-    background:rgba(255,255,255,.4);
+    background:rgba(255,255,255,.45);
 
     border:1px solid var(--glass-border);
 
@@ -332,8 +267,6 @@ body{
     border-radius:50%;
 
     background:var(--sky-4);
-
-    box-shadow:0 0 0 0 rgba(153,195,228,.6);
 
     animation:pulse 2.4s ease-out infinite;
 
@@ -382,7 +315,7 @@ body{
     border:1px solid var(--glass-border);
     border-radius:14px;
 
-    background:rgba(255,255,255,.4);
+    background:rgba(255,255,255,.45);
 
     cursor:pointer;
 
@@ -390,106 +323,56 @@ body{
 
 }
 
-.win-btn:hover{
-
-    transform:translateY(-3px) scale(1.06);
-
-    background:#fff;
-
-}
-
-.win-btn:active{
-
-    transform:translateY(0) scale(.94);
-
-}
+.win-btn:hover{ transform:translateY(-3px) scale(1.06); background:#fff; }
+.win-btn:active{ transform:translateY(0) scale(.94); }
 
 /* ===========================
-   Identity Card
+   Card Body Layout
 =========================== */
 
-.id-card{
-
-    position:relative;
-    z-index:1;
-
-    margin:16px 16px 0;
-
-    padding:20px;
-
-    border-radius:26px;
-
-    overflow:hidden;
-
-    border:1px solid var(--glass-border);
-
-    background:rgba(255,255,255,.22);
-
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-
-}
-
-.id-cover{
-
-    position:absolute;
-    inset:0;
-
-    background-size:cover;
-    background-position:center;
-
-    filter:blur(3px) saturate(1.05);
-
-    opacity:.4;
-
-    z-index:0;
-
-}
-
-.id-card::before{
-
-    content:"";
-
-    position:absolute;
-    inset:0;
-
-    background:linear-gradient(
-        160deg,
-        rgba(255,255,255,.55),
-        rgba(255,249,230,.25) 60%,
-        rgba(168,208,239,.3)
-    );
-
-    z-index:0;
-
-}
-
-.id-content{
+.card-body{
 
     position:relative;
     z-index:1;
 
     display:flex;
-    align-items:flex-start;
-    gap:16px;
+    flex-direction:column;
 
 }
 
-.id-avatar{
+/* ===========================
+   Identity Panel
+=========================== */
 
-    width:92px;
-    height:92px;
-    flex-shrink:0;
+.id-panel{
+
+    padding:26px 24px 8px;
+
+    text-align:center;
+
+}
+
+.avatar-wrapper{
+
+    display:flex;
+    justify-content:center;
+
+}
+
+.avatar{
+
+    width:120px;
+    height:120px;
 
     object-fit:cover;
 
-    border-radius:24px;
+    border-radius:50%;
 
-    border:4px solid rgba(255,255,255,.65);
+    border:5px solid rgba(255,255,255,.7);
 
     background:white;
 
-    box-shadow:0 10px 26px rgba(66,110,158,.25);
+    box-shadow:0 10px 28px rgba(66,110,158,.3);
 
     animation:avatarFloat 5s ease-in-out infinite;
 
@@ -502,23 +385,16 @@ body{
 
 }
 
-.id-text{
+.id-panel h1{
 
-    flex:1;
-    min-width:0;
-
-}
-
-.id-text h1{
+    margin-top:16px;
 
     font-family:"Quicksand",sans-serif;
 
-    font-size:1.4rem;
+    font-size:1.55rem;
     font-weight:700;
 
     color:var(--text);
-
-    line-height:1.2;
 
 }
 
@@ -528,7 +404,7 @@ body{
 
     margin-top:8px;
 
-    padding:3px 13px;
+    padding:3px 14px;
 
     border-radius:999px;
 
@@ -543,115 +419,128 @@ body{
 
 }
 
-.id-desc{
+.description{
 
-    margin-top:10px;
+    margin:14px auto 0;
 
-    font-size:.85rem;
-    line-height:1.6;
+    max-width:320px;
+
+    font-size:.88rem;
+    line-height:1.7;
 
     color:var(--muted);
 
 }
 
-.icon-row{
+/* ===========================================
+   Social Grid (original glass-btn rows)
+=========================================== */
 
-    display:flex;
-    gap:9px;
+.social-grid{
 
-    margin-top:14px;
+    display:grid;
+    grid-template-columns:1fr;
+
+    gap:12px;
+
+    margin-top:20px;
 
 }
 
-.icon-btn{
+.glass-btn{
 
-    position:relative;
+    display:flex;
+    align-items:center;
+    gap:16px;
 
-    width:38px;
-    height:38px;
+    padding:14px 18px;
+
+    text-decoration:none;
+    text-align:left;
+
+    color:var(--text);
+
+    background:rgba(255,255,255,.4);
+
+    border:1px solid var(--glass-border);
+
+    border-radius:20px;
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    transition:transform .3s ease, background .3s ease, box-shadow .3s ease;
+
+}
+
+.glass-btn:hover{
+
+    transform:translateY(-5px) scale(1.02);
+
+    background:rgba(255,255,255,.55);
+
+    box-shadow:0 14px 30px rgba(66,110,158,.22);
+
+}
+
+.glass-btn .icon{
+
+    width:44px;
+    height:44px;
+    flex-shrink:0;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    font-size:1rem;
+    border-radius:14px;
 
-    text-decoration:none;
-
-    border-radius:13px;
-
-    background:rgba(255,255,255,.5);
+    background:rgba(255,255,255,.55);
 
     border:1px solid var(--glass-border);
 
-    transition:transform .25s ease, background .25s ease, box-shadow .25s ease;
+}
+
+.glass-btn .icon img{
+
+    width:22px;
+    height:22px;
+
+    object-fit:contain;
 
 }
 
-.icon-btn:hover{
+.glass-btn h3{
 
-    transform:translateY(-5px) scale(1.08);
-
-    background:#fff;
-
-    box-shadow:0 10px 20px rgba(66,110,158,.22);
+    font-size:.92rem;
+    margin-bottom:2px;
 
 }
 
-.icon-btn::after{
+.glass-btn p{
 
-    content:attr(data-tooltip);
-
-    position:absolute;
-
-    bottom:calc(100% + 9px);
-    left:50%;
-
-    transform:translateX(-50%) translateY(4px);
-
-    padding:5px 10px;
-
-    border-radius:8px;
-
-    background:var(--text);
-
-    color:#fff;
-
-    font-size:.68rem;
-    font-weight:500;
-    white-space:nowrap;
-
-    opacity:0;
-
-    pointer-events:none;
-
-    transition:opacity .2s ease, transform .2s ease;
-
-}
-
-.icon-btn:hover::after,
-.icon-btn:focus-visible::after{
-
-    opacity:1;
-
-    transform:translateX(-50%) translateY(0);
+    color:var(--muted);
+    font-size:.8rem;
 
 }
 
 /* ===========================================
-   Nav Stack
+   Main Panel (nav + about + quote)
 =========================================== */
 
-.nav-stack{
+.main-panel{
 
-    position:relative;
-    z-index:1;
+    padding-top:8px;
+
+}
+
+.nav-stack{
 
     display:flex;
     flex-direction:column;
     gap:13px;
 
-    padding:20px 16px 4px;
+    padding:14px 24px 4px;
 
 }
 
@@ -676,7 +565,7 @@ body{
     background:linear-gradient(
         135deg,
         rgba(255,255,255,.62),
-        rgba(255,255,255,.28)
+        rgba(255,255,255,.3)
     );
 
     border:1px solid var(--glass-border);
@@ -689,21 +578,12 @@ body{
 
 }
 
-.nav-pill--home{ background:linear-gradient(135deg, rgba(227,241,251,.85), rgba(255,255,255,.3)); }
-.nav-pill--rules{ background:linear-gradient(135deg, rgba(193,228,243,.85), rgba(255,255,255,.3)); }
-.nav-pill--interests{ background:linear-gradient(135deg, rgba(255,249,230,.85), rgba(255,255,255,.3)); }
+.nav-pill--home{ background:linear-gradient(135deg, rgba(227,241,251,.88), rgba(255,255,255,.32)); }
+.nav-pill--rules{ background:linear-gradient(135deg, rgba(193,228,243,.88), rgba(255,255,255,.32)); }
+.nav-pill--interests{ background:linear-gradient(135deg, rgba(255,249,230,.88), rgba(255,255,255,.32)); }
 
-.nav-icon{
-
-    font-size:1.15rem;
-
-}
-
-.nav-label{
-
-    flex:1;
-
-}
+.nav-icon{ font-size:1.15rem; }
+.nav-label{ flex:1; }
 
 .nav-arrow{
 
@@ -711,8 +591,6 @@ body{
     font-weight:700;
 
     color:var(--sky-4);
-
-    transform:translateX(0);
 
     transition:transform .3s ease;
 
@@ -728,11 +606,7 @@ body{
 
 }
 
-.nav-pill:hover .nav-arrow{
-
-    transform:translateX(4px);
-
-}
+.nav-pill:hover .nav-arrow{ transform:translateX(4px); }
 
 .nav-pill:active{
 
@@ -750,16 +624,13 @@ body{
 
 .glass-panel{
 
-    position:relative;
-    z-index:1;
-
-    margin:6px 16px 18px;
+    margin:14px 24px 0;
 
     padding:20px;
 
     border-radius:22px;
 
-    background:rgba(255,255,255,.24);
+    background:rgba(255,255,255,.32);
 
     border:1px solid var(--glass-border);
 
@@ -774,7 +645,7 @@ body{
 
     transform:translateY(-4px);
 
-    background:rgba(255,255,255,.32);
+    background:rgba(255,255,255,.42);
 
 }
 
@@ -800,11 +671,7 @@ body{
 
 }
 
-.quote-panel{
-
-    background:rgba(255,249,230,.35);
-
-}
+.quote-panel{ background:rgba(255,249,230,.42); }
 
 .quote{
 
@@ -827,7 +694,7 @@ footer{
     position:relative;
     z-index:1;
 
-    padding:6px 30px 26px;
+    padding:20px 30px 26px;
 
     text-align:center;
 
@@ -838,7 +705,74 @@ footer{
 }
 
 /* ===========================================
-   Responsive
+   Landscape layout for PC
+=========================================== */
+
+@media (min-width:860px){
+
+    body{ padding:40px 20px; }
+
+    .profile-card{
+
+        width:min(920px, 94vw);
+
+        border-radius:40px;
+
+    }
+
+    .card-body{
+
+        flex-direction:row;
+        align-items:stretch;
+
+    }
+
+    .id-panel{
+
+        flex:0 0 340px;
+
+        padding:34px 30px;
+
+        border-right:1px solid rgba(255,255,255,.4);
+
+    }
+
+    .main-panel{
+
+        flex:1;
+        min-width:0;
+
+        padding:24px 6px 6px;
+
+    }
+
+    .nav-stack{
+
+        flex-direction:row;
+        padding:10px 26px 4px;
+
+    }
+
+    .nav-pill{
+
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+
+        flex:1;
+
+    }
+
+    .nav-arrow{ align-self:flex-end; }
+
+    .glass-panel{ margin:16px 26px 0; }
+
+    footer{ padding:14px 30px 30px; }
+
+}
+
+/* ===========================================
+   Small Mobile
 =========================================== */
 
 @media (max-width:480px){
@@ -847,9 +781,9 @@ footer{
 
     .profile-card{ border-radius:26px; }
 
-    .id-avatar{ width:76px; height:76px; border-radius:20px; }
+    .avatar{ width:100px; height:100px; }
 
-    .id-text h1{ font-size:1.2rem; }
+    .id-panel h1{ font-size:1.3rem; }
 
     .win-btn{ width:34px; height:34px; }
 
