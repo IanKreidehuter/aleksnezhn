@@ -101,17 +101,26 @@ body{
    cover.jpg stays OUTSIDE the card
 =========================== */
 
+/* Full-screen cover image behind the card */
 .cover-background{
     position:fixed;
     inset:0;
-    z-index:-3;
-    background-image:
-        linear-gradient(rgba(227,241,251,.34), rgba(255,249,230,.28)),
-        url("assets/cover.jpg");
+    z-index:0;
+    pointer-events:none;
+    background-image:url("assets/cover.jpg");
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
-    pointer-events:none;
+}
+
+/* Subtle dark glass + blur over the cover */
+.cover-background::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(20,35,55,.18);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
 }
 
 /* ===========================
@@ -125,7 +134,8 @@ body{
 
     overflow:hidden;
 
-    z-index:-2;
+    z-index:1;
+    pointer-events:none;
 
 }
 
@@ -208,6 +218,7 @@ body{
 
     overflow:hidden;
     isolation:isolate;
+    z-index:2;
 
     background: rgba(193,228,243,.22);
 
@@ -896,6 +907,9 @@ button:focus-visible{
 <body>
 
 <!-- Full-screen cover background (outside the card) -->
+<div class="cover-background" aria-hidden="true"></div>
+
+<!-- Full-screen cover behind the card -->
 <div class="cover-background" aria-hidden="true"></div>
 
 <!-- Animated Background -->
