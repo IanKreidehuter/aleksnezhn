@@ -15,7 +15,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="ccs/style.css">
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -38,6 +38,9 @@
 <!-- Main Card -->
 <main class="profile-card">
 
+<!-- cover.jpg lives here, full-bleed behind everything -->
+<div class="card-bg" style="background-image:url('assets/cover.jpg')"></div>
+
 <!-- Window Chrome -->
 <div class="window-bar">
 
@@ -59,40 +62,46 @@
 
 </div>
 
-<!-- Identity -->
-<section class="id-card" id="aboutAnchor">
+<div class="card-body">
 
-<div class="id-cover" style="background-image:url('assets/cover.jpg')"></div>
+<!-- Identity (left, portrait side) -->
+<section class="id-panel" id="aboutAnchor">
 
-<div class="id-content">
+<div class="avatar-wrapper">
 
 <img
 src="assets/profile.png"
 alt="Adrian Aditya"
-class="id-avatar">
+class="avatar">
 
-<div class="id-text">
+</div>
 
 <h1>Adrian Aditya</h1>
 
 <span class="id-tag">Human</span>
 
-<p class="id-desc">
+<p class="description">
 
 Quietly wandering through stories, technology, languages, and places that feel like home.
 
 </p>
 
-<div class="icon-row">
+<div class="social-grid">
 
 <a
 href="https://wa.me/6285111247067"
 target="_blank"
 rel="noopener"
-class="icon-btn"
-data-tooltip="WhatsApp">
+class="glass-btn">
 
-💬
+<div class="icon">
+<img src="assets/whatsapp.png" alt="">
+</div>
+
+<div>
+<h3>WhatsApp</h3>
+<p>+62 851-1124-7067</p>
+</div>
 
 </a>
 
@@ -100,10 +109,16 @@ data-tooltip="WhatsApp">
 href="https://instagram.com/kreidehuter"
 target="_blank"
 rel="noopener"
-class="icon-btn"
-data-tooltip="@kreidehuter">
+class="glass-btn">
 
-📸
+<div class="icon">
+<img src="assets/instagram.png" alt="">
+</div>
+
+<div>
+<h3>Instagram</h3>
+<p>@kreidehuter</p>
+</div>
 
 </a>
 
@@ -111,31 +126,40 @@ data-tooltip="@kreidehuter">
 href="https://x.com/kreidehuter"
 target="_blank"
 rel="noopener"
-class="icon-btn"
-data-tooltip="@kreidehuter">
+class="glass-btn">
 
-✕
+<div class="icon">
+<img src="assets/xtwitter.png" alt="">
+</div>
+
+<div>
+<h3>X (Twitter)</h3>
+<p>@kreidehuter</p>
+</div>
 
 </a>
 
 <a
 href="mailto:froylanfahlanaditya@gmail.com"
-class="icon-btn"
-data-tooltip="Mail">
+class="glass-btn">
 
-✉️
+<div class="icon">
+<img src="assets/email.png" alt="">
+</div>
+
+<div>
+<h3>Mail</h3>
+<p>froylanfahlanaditya@gmail.com</p>
+</div>
 
 </a>
 
 </div>
 
-</div>
-
-</div>
-
 </section>
 
-<!-- Nav Stack -->
+<!-- Main column (right, on desktop) -->
+<div class="main-panel">
 
 <nav class="nav-stack">
 
@@ -183,8 +207,6 @@ class="nav-pill nav-pill--interests">
 
 </nav>
 
-<!-- About -->
-
 <section class="glass-panel">
 
 <h2>About</h2>
@@ -197,8 +219,6 @@ I enjoy creating websites, exploring different languages, photography, and desig
 
 </section>
 
-<!-- Quote -->
-
 <section class="glass-panel quote-panel">
 
 <p class="quote">
@@ -209,6 +229,10 @@ It's simply someone who remembers your name."
 </p>
 
 </section>
+
+</div>
+
+</div>
 
 <footer>
 
