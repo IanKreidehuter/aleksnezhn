@@ -29,14 +29,14 @@ document.addEventListener("mousemove", (e) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const rotateY = ((x / rect.width) - 0.5) * 10;
-    const rotateX = ((0.5 - y / rect.height)) * 10;
+    const rotateY = ((x / rect.width) - 0.5) * 8;
+    const rotateX = ((0.5 - y / rect.height)) * 8;
 
     card.style.transform = `
-        perspective(1200px)
+        perspective(1400px)
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
-        translateY(-5px)
+        translateY(-4px)
     `;
 
 });
@@ -44,7 +44,7 @@ document.addEventListener("mousemove", (e) => {
 card.addEventListener("mouseleave", () => {
 
     card.style.transform = `
-        perspective(1200px)
+        perspective(1400px)
         rotateX(0deg)
         rotateY(0deg)
         translateY(0px)
@@ -166,14 +166,14 @@ document.querySelectorAll(".nav-pill").forEach((pill) => {
 });
 
 /* ==========================
-   Icon Button lift
+   Social icon lift
 ========================== */
 
-document.querySelectorAll(".icon-btn").forEach((btn) => {
+document.querySelectorAll(".glass-btn").forEach((btn) => {
 
     btn.addEventListener("mouseenter", () => {
 
-        btn.style.transform = "translateY(-5px) scale(1.08)";
+        btn.style.transform = "translateY(-5px) scale(1.02)";
 
     });
 
@@ -207,7 +207,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: .2 });
 
 document.querySelectorAll(
-    ".glass-panel, .nav-pill, .id-card"
+    ".glass-panel, .nav-pill, .id-panel, .glass-btn"
 ).forEach((el) => {
 
     observer.observe(el);
