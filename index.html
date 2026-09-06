@@ -8,14 +8,14 @@
 
 <title>Adrian Aditya</title>
 
-<meta name="theme-color" content="#8DB7FF">
+<meta name="theme-color" content="#A8D0EF">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="ccs/style.css">
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -38,160 +38,156 @@
 <!-- Main Card -->
 <main class="profile-card">
 
-<!-- Cover -->
+<!-- Window Chrome -->
+<div class="window-bar">
 
-<section class="cover">
+<div class="window-pill">
 
-<img
-src="assets/cover.jpg"
-alt="Cover">
+<span class="pulse-dot"></span>
 
-</section>
+<span class="status-text" id="statusText">nice to meet you!</span>
 
-<!-- Avatar -->
+</div>
 
-<div class="avatar-wrapper">
+<div class="window-actions">
+
+<button class="win-btn" id="folderBtn" type="button" title="Jump to About" aria-label="Jump to about section">📁</button>
+
+<button class="win-btn" id="closeBtn" type="button" title="Say hi" aria-label="Send a little hi">✕</button>
+
+</div>
+
+</div>
+
+<!-- Identity -->
+<section class="id-card" id="aboutAnchor">
+
+<div class="id-cover" style="background-image:url('assets/cover.jpg')"></div>
+
+<div class="id-content">
 
 <img
 src="assets/profile.png"
 alt="Adrian Aditya"
-class="avatar">
+class="id-avatar">
 
-</div>
+<div class="id-text">
 
-<!-- Information -->
+<h1>Adrian Aditya</h1>
 
-<section class="profile-info">
+<span class="id-tag">Human</span>
 
-<h1>
-Adrian Aditya
-</h1>
-
-<p class="subtitle">
-Human
-</p>
-
-<p class="description">
+<p class="id-desc">
 
 Quietly wandering through stories, technology, languages, and places that feel like home.
 
 </p>
 
-</section>
-
-<!-- Social Buttons -->
-
-<section class="social-grid">
+<div class="icon-row">
 
 <a
 href="https://wa.me/6285111247067"
 target="_blank"
-class="glass-btn">
-
-<div class="icon">
+rel="noopener"
+class="icon-btn"
+data-tooltip="WhatsApp">
 
 💬
-
-</div>
-
-<div>
-
-<h3>
-WhatsApp
-</h3>
-
-<p>
-+62 851-1124-7067
-</p>
-
-</div>
 
 </a>
 
 <a
 href="https://instagram.com/kreidehuter"
 target="_blank"
-class="glass-btn">
-
-<div class="icon">
+rel="noopener"
+class="icon-btn"
+data-tooltip="@kreidehuter">
 
 📸
-
-</div>
-
-<div>
-
-<h3>
-Instagram
-</h3>
-
-<p>
-@kreidehuter
-</p>
-
-</div>
 
 </a>
 
 <a
 href="https://x.com/kreidehuter"
 target="_blank"
-class="glass-btn">
-
-<div class="icon">
+rel="noopener"
+class="icon-btn"
+data-tooltip="@kreidehuter">
 
 ✕
-</div>
-
-<div>
-
-<h3>
-X (Twitter)
-</h3>
-
-<p>
-@kreidehuter
-</p>
-
-</div>
 
 </a>
 
 <a
 href="mailto:froylanfahlanaditya@gmail.com"
-class="glass-btn">
-
-<div class="icon">
+class="icon-btn"
+data-tooltip="Mail">
 
 ✉️
 
-</div>
-
-<div>
-
-<h3>
-Mail
-</h3>
-
-<p>
-froylanfahlanaditya@gmail.com
-</p>
+</a>
 
 </div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Nav Stack -->
+
+<nav class="nav-stack">
+
+<a
+href="https://iankreidehuter.space/"
+target="_blank"
+rel="noopener"
+class="nav-pill nav-pill--home">
+
+<span class="nav-icon">🏠</span>
+
+<span class="nav-label">Home</span>
+
+<span class="nav-arrow">›</span>
 
 </a>
 
-</section>
+<a
+href="https://iankreidehuter.space/boundaries"
+target="_blank"
+rel="noopener"
+class="nav-pill nav-pill--rules">
+
+<span class="nav-icon">📖</span>
+
+<span class="nav-label">Rules</span>
+
+<span class="nav-arrow">›</span>
+
+</a>
+
+<a
+href="https://www.pinterest.com/aleksnezhn/"
+target="_blank"
+rel="noopener"
+class="nav-pill nav-pill--interests">
+
+<span class="nav-icon">📌</span>
+
+<span class="nav-label">Interests</span>
+
+<span class="nav-arrow">›</span>
+
+</a>
+
+</nav>
 
 <!-- About -->
 
 <section class="glass-panel">
 
-<h2>
-
-About
-
-</h2>
+<h2>About</h2>
 
 <p>
 
@@ -203,7 +199,7 @@ I enjoy creating websites, exploring different languages, photography, and desig
 
 <!-- Quote -->
 
-<section class="glass-panel">
+<section class="glass-panel quote-panel">
 
 <p class="quote">
 
