@@ -982,13 +982,15 @@ button:focus-visible{
     from{ opacity:0; transform:translateY(-50%) scale(.85) rotate(-8deg); }
     to{ opacity:1; transform:translateY(-50%) scale(1) rotate(0deg); }
 }
-.intro-emblem svg{ width:100%; height:100%; display:block; }
-.intro-ring{ fill:none; stroke:var(--intro-ember); stroke-opacity:.55; }
-.intro-ring.spin-slow{ transform-origin:200px 200px; animation:introSpin 90s linear infinite; }
-.intro-ring.spin-rev{ transform-origin:200px 200px; animation:introSpin 70s linear infinite reverse; }
+.intro-emblem img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    filter:drop-shadow(0 0 26px rgba(191,228,255,.35));
+    animation:introSpin 5s linear infinite;
+}
 @keyframes introSpin{ to{ transform:rotate(360deg); } }
-.intro-glyphline{ stroke:var(--intro-gold); stroke-opacity:.5; }
-.intro-core{ fill:rgba(91,143,179,0.12); stroke:var(--intro-ember-hot); stroke-opacity:.7; }
 
 .intro-sweep{
     position:absolute; inset:0;
@@ -1119,18 +1121,7 @@ button:focus-visible{
     <div class="intro-embers" id="introEmbers"></div>
 
     <div class="intro-emblem">
-        <svg viewBox="0 0 400 400">
-            <circle class="intro-ring spin-slow" cx="200" cy="200" r="170" stroke-width="1"/>
-            <circle class="intro-ring spin-rev" cx="200" cy="200" r="150" stroke-width="1" stroke-dasharray="2 10"/>
-            <circle class="intro-ring spin-slow" cx="200" cy="200" r="120" stroke-width="1.5" stroke-dasharray="1 4"/>
-            <g class="intro-glyphline spin-rev" style="transform-origin:200px 200px;">
-                <line x1="200" y1="30" x2="200" y2="55" stroke-width="1"/>
-                <line x1="200" y1="370" x2="200" y2="345" stroke-width="1"/>
-                <line x1="30" y1="200" x2="55" y2="200" stroke-width="1"/>
-                <line x1="370" y1="200" x2="345" y2="200" stroke-width="1"/>
-            </g>
-            <circle class="intro-core" cx="200" cy="200" r="60" stroke-width="1.5"/>
-        </svg>
+        <img src="icon.png" alt="">
     </div>
 
     <div class="intro-sweep"></div>
