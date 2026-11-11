@@ -1,0 +1,220 @@
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const slug = s => String(s || '').toLowerCase().replace(/[^a-z]/g, '');
+const ICON_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16M9 8h6"/></svg>';
+
+let ADMIN_TOKEN = '';
+
+/* ---------- backend calls (google.script.run -> api()) ---------- */
+function api(action, payload) {
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler(r => (r && r.success ? resolve(r) : reject(new Error((r && r.message) || 'The request failed.'))))
+      .withFailureHandler(e => reject(new Error(e && e.message ? e.message : 'Could not reach the server. Check your connection.')))
+      .api(action, payload || {}, ADMIN_TOKEN);
+  });
+}
+
+/* ---------- toasts & dialogs ---------- */
+function toast(msg, type) {
+  let box = $('#toasts');
+  if (!box) { box = document.createElement('div'); box.id = 'toasts'; box.setAttribute('role', 'status'); box.setAttribute('aria-live', 'polite'); document.body.append(box); }
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  box.append(t);
+  setTimeout(() => t.remove(), type === 'error' ? 6000 : 3500);
+}
+
+function confirmDialog(message, okLabel) {
+  return new Promise(resolve => {
+    const d = document.createElement('dialog');
+    d.innerHTML = '<form method="dialog"><p>' + esc(message) + '</p><div class="row end"><button class="btn ghost" value="no">Cancel</button><button class="btn danger" value="yes" autofocus>' + esc(okLabel || 'Delete') + '</button></div></form>';
+    d.addEventListener('close', () => { resolve(d.returnValue === 'yes'); d.remove(); });
+    document.body.append(d);
+    d.showModal();
+  });
+}
+
+/* ---------- formatting ---------- */
+function fmtDate(d) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d || '')) return '';
+  const p = d.split('-').map(Number);
+  return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+function fmtTime(t) {
+  if (!/^\d{2}:\d{2}$/.test(t || '')) return '';
+  const p = t.split(':').map(Number);
+  return new Date(2000, 0, 1, p[0], p[1]).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+}
+function fmtStamp(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? '' : d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+/* ---------- journal card (used by timeline and the live preview) ---------- */
+const MEDIA_STORE = {};
+
+function renderCard(e, o) {
+  o = o || {};
+  const id = e.entryId || 'preview';
+  MEDIA_STORE[id] = e.media || [];
+  const emo = e.emotions || [];
+  const sec = (label, txt, cls) => txt ? '<section class="sec ' + (cls || '') + '"><h4>' + esc(label) + '</h4><p>' + esc(txt) + '</p></section>' : '';
+  const resp = (e.behaviourResponse || e.physicalResponse)
+    ? '<div class="two">' + sec('What I did', e.behaviourResponse) + sec('In my body', e.physicalResponse) + '</div>' : '';
+  const tags = emo.length
+    ? '<div class="tags" aria-label="Emotions">' + emo.map(x => '<span class="tag cat-' + slug(x.category) + '">' + esc(x.name) + ' <small>' + esc(x.category) + '</small></span>').join('') + '</div>' : '';
+  const media = (e.media || []).length
+    ? '<div class="media-grid">' + e.media.map((m, i) =>
+      '<button type="button" class="thumb" data-i="' + i + '" data-state="pending" aria-label="Open ' + esc(m.mediaType) + ': ' + esc(m.fileName) + '"><span class="thumb-box">' + (m.mediaType === 'video' ? 'Video' : 'Image') + '</span>' + (m.mediaType === 'video' ? '<span class="play">Video</span>' : '') + '</button>').join('') + '</div>' : '';
+  const moods = (e.moodRecords || []).length
+    ? '<details class="moods"><summary>Mood checker (' + e.moodRecords.length + ')</summary><div class="mood-wrap"><table class="mood"><thead><tr><th>No.</th><th>Peristiwa</th><th>Pikiran</th><th>Emosi</th><th>Respons perilaku / respons tubuh</th></tr></thead><tbody>' +
+      e.moodRecords.map((r, i) => '<tr><td class="no">' + (i + 1) + '</td><td data-label="Peristiwa">' + esc(r.event) + '</td><td data-label="Pikiran">' + esc(r.thoughts) + '</td><td data-label="Emosi">' + esc(r.emotion) + '</td><td data-label="Respons perilaku / respons tubuh">' + esc(r.behaviourResponse) + (r.behaviourResponse && r.physicalResponse ? ', ' : '') + esc(r.physicalResponse) + '</td></tr>').join('') +
+      '</tbody></table></div></details>' : '';
+  const edit = o.edit && e.entryId ? '<a class="btn small ghost" href="' + esc(APP.base) + '?page=admin&edit=' + esc(e.entryId) + '" target="_top">Edit</a>' : '';
+  const foot = [
+    e.additionalNotes ? '<div class="note">' + esc(e.additionalNotes) + '</div>' : '',
+    '<div>Created ' + esc(fmtStamp(e.createdAt)) + (e.edited ? ' &nbsp; Last modified ' + esc(fmtStamp(e.updatedAt)) : '') + '</div>'
+  ].join('');
+  return '<article class="card" data-id="' + esc(id) + '">' +
+    '<div class="strip">' + emo.map(x => '<i class="cat-' + slug(x.category) + '"></i>').join('') + '</div>' +
+    '<header class="card-h"><span class="avatar">' + ICON_BOOK + '</span><div class="grow"><div class="when">' + esc(fmtDate(e.entryDate)) + '<span>' + esc(fmtTime(e.entryTime)) + '</span></div>' +
+    '<div class="meta">' + (e.location ? '<span>' + esc(e.location) + '</span>' : '') + (e.edited ? '<span class="badge">Edited</span>' : '') + '</div></div>' + edit + '</header>' +
+    '<div class="card-b">' + sec('What happened', e.event, 'big') + sec('On my mind', e.thoughts, 'big') + tags + resp + media + moods + '</div>' +
+    '<footer class="card-f">' + foot + '</footer></article>';
+}
+
+/* ---------- thumbnails (Drive media stays private; previews go through the backend) ---------- */
+const thumbCache = new Map();
+const thumbObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver(list => list.forEach(en => { if (en.isIntersecting) { thumbObserver.unobserve(en.target); loadThumb(en.target); } }), { rootMargin: '200px' }) : null;
+
+function mediaFor(el) {
+  const host = el.closest('[data-id]');
+  return host ? (MEDIA_STORE[host.dataset.id] || [])[Number(el.dataset.i)] : null;
+}
+
+function hydrateMedia(root) {
+  $$('.thumb[data-state="pending"]', root).forEach(el => {
+    el.dataset.state = 'queued';
+    const m = mediaFor(el);
+    if (!m) return;
+    if (m.localUrl || !m.fileId || !thumbObserver) loadThumb(el); else thumbObserver.observe(el);
+  });
+}
+
+async function loadThumb(el) {
+  const m = mediaFor(el);
+  const box = $('.thumb-box', el);
+  if (!m || !box) return;
+  const src = m.localUrl || (!m.fileId ? m.fileUrl : '');
+  if (src) {
+    box.innerHTML = m.mediaType === 'video'
+      ? '<video src="' + esc(src) + '#t=0.1" preload="metadata" muted playsinline></video>'
+      : '<img src="' + esc(src) + '" alt="" loading="lazy">';
+    return;
+  }
+  try {
+    let u = thumbCache.get(m.mediaId);
+    if (u === undefined) {
+      const r = await api('thumb', { mediaId: m.mediaId });
+      u = r.data && r.data.dataUrl ? r.data.dataUrl : null;
+      thumbCache.set(m.mediaId, u);
+    }
+    if (u) box.innerHTML = '<img src="' + u + '" alt="">';
+  } catch (err) { box.textContent = 'Unavailable'; }
+}
+
+/* ---------- larger viewer ---------- */
+let VIEW = { list: [], i: 0 };
+
+function openViewer(list, i) {
+  VIEW = { list: list, i: i };
+  let d = $('#viewer');
+  if (!d) {
+    d = document.createElement('dialog');
+    d.id = 'viewer';
+    d.setAttribute('aria-label', 'Media viewer');
+    d.innerHTML = '<div class="v-bar"><span id="vCap"></span><button type="button" class="btn ghost small" id="vClose">Close</button></div><div class="v-stage" id="vStage"></div><div class="v-nav"><button type="button" class="btn ghost small" id="vPrev">Previous</button><a id="vOpen" class="btn ghost small" target="_blank" rel="noopener">Open original</a><button type="button" class="btn ghost small" id="vNext">Next</button></div>';
+    document.body.append(d);
+    $('#vClose').onclick = () => d.close();
+    $('#vPrev').onclick = () => step(-1);
+    $('#vNext').onclick = () => step(1);
+    d.addEventListener('keydown', ev => { if (ev.key === 'ArrowLeft') step(-1); if (ev.key === 'ArrowRight') step(1); });
+    d.addEventListener('close', () => { $('#vStage').innerHTML = ''; });
+  }
+  showMedia();
+  d.showModal();
+}
+
+function step(n) {
+  VIEW.i = (VIEW.i + n + VIEW.list.length) % VIEW.list.length;
+  showMedia();
+}
+
+async function showMedia() {
+  const m = VIEW.list[VIEW.i];
+  const stage = $('#vStage');
+  if (!m) return;
+  $('#vCap').textContent = m.fileName + ' (' + (VIEW.i + 1) + '/' + VIEW.list.length + ')';
+  $('#vPrev').hidden = $('#vNext').hidden = VIEW.list.length < 2;
+  const open = $('#vOpen');
+  const src = m.localUrl || (!m.fileId ? m.fileUrl : '');
+  open.hidden = !!m.localUrl;
+  open.href = m.fileUrl || '#';
+  if (src) {
+    stage.innerHTML = m.mediaType === 'video' ? '<video src="' + esc(src) + '" controls playsinline></video>' : '<img src="' + esc(src) + '" alt="' + esc(m.fileName) + '">';
+    return;
+  }
+  const mine = VIEW.i;
+  if (m.mediaType === 'video') {
+    stage.innerHTML = '<iframe src="https://drive.google.com/file/d/' + esc(m.fileId) + '/preview" allow="autoplay; fullscreen" title="' + esc(m.fileName) + '"></iframe>';
+    return;
+  }
+  const t = thumbCache.get(m.mediaId);
+  stage.innerHTML = t ? '<img src="' + t + '" alt="">' : '<p class="hint">Loading...</p>';
+  try {
+    const r = await api('image', { mediaId: m.mediaId });
+    if (mine !== VIEW.i) return;
+    if (r.data && r.data.dataUrl) stage.innerHTML = '<img src="' + r.data.dataUrl + '" alt="' + esc(m.fileName) + '">';
+    else stage.innerHTML = '<iframe src="https://drive.google.com/file/d/' + esc(m.fileId) + '/preview" title="' + esc(m.fileName) + '"></iframe>';
+  } catch (err) { if (mine === VIEW.i) stage.innerHTML = '<p class="hint">Could not load this image.</p>'; }
+}
+
+document.addEventListener('click', ev => {
+  const t = ev.target.closest('.thumb');
+  if (!t) return;
+  const host = t.closest('[data-id]');
+  if (host && MEDIA_STORE[host.dataset.id]) openViewer(MEDIA_STORE[host.dataset.id], Number(t.dataset.i));
+});
+
+/* ---------- chunked upload to Drive through the backend ---------- */
+function readB64(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(',')[1] || '');
+    r.onerror = () => reject(new Error('Could not read the file.'));
+    r.readAsDataURL(blob);
+  });
+}
+
+async function uploadFile(file, onProgress) {
+  const start = await api('startUpload', { fileName: file.name, mimeType: file.type, size: file.size });
+  const uploadId = start.data.uploadId;
+  const CH = start.data.chunkBytes;
+  let pos = 0;
+  while (pos < file.size) {
+    const end = Math.min(pos + CH, file.size);
+    const res = await api('uploadChunk', { uploadId: uploadId, start: pos, data: await readB64(file.slice(pos, end)) });
+    pos = end;
+    if (onProgress) onProgress(pos / file.size);
+    if (res.data.done) return res.data.file;
+  }
+  throw new Error('The upload did not finish.');
+}
+
+const debounce = (fn, ms) => { let t; return function () { const a = arguments; clearTimeout(t); t = setTimeout(() => fn.apply(null, a), ms); }; };
+</script>
